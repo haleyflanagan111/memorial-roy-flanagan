@@ -1,0 +1,46 @@
+<section class="gallery" id="gallery">
+  <!-- Images will be dynamically loaded here -->
+</section>
+
+<script>
+  const gallery = document.getElementById('gallery');
+  const imagesFolder = 'images/'; // Folder where your photos live
+  const totalPhotos = 100; // Number of photos you have
+  const batchSize = 12;
+  let loadedPhotos = 0;
+
+  function loadBatch() {
+    for(let i = loadedPhotos + 1; i <= Math.min(loadedPhotos + batchSize, totalPhotos); i++) {
+      const img = document.createElement('img');
+      // Assuming your images are named photo1.jpg, photo2.jpg, etc.
+      img.src = `${imagesFolder}photo${i}.jpg`;
+      img.alt = `Photo ${i}`;
+      img.classList.add('fade-in');
+      gallery.appendChild(img);
+      observer.observe(img);
+      img.addEventListener('click', () => {
+        lightbox.style.display = 'flex';
+        lightboxImg.src = img.src;
+      });
+    }
+    loadedPhotos += batchSize;
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  // Lazy load on scroll
+  window.addEventListener('scroll', () => {
+    if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+      if(loadedPhotos < totalPhotos) loadBatch();
+    }
+  });
+
+  // Initial load
+  loadBatch();
+</script>

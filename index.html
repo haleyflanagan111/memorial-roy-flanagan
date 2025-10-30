@@ -35,7 +35,7 @@
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 15px;
     padding: 20px;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: auto;
   }
   section.gallery img {
@@ -58,8 +58,8 @@
     display: none;
     justify-content: center;
     align-items: center;
-    top:0; left:0;
-    width:100%; height:100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     background: rgba(0,0,0,0.8);
     z-index: 1000;
   }
@@ -84,11 +84,11 @@
 <header>
   <h1>In Loving Memory of Roy Flanagan</h1>
   <h2>beloved brother, uncle and friend</h2>
-  <h3>1962-2025</h3>
+  <h3>1962–2025</h3>
 </header>
 
 <section class="gallery" id="gallery">
-  <!-- Images will be loaded here automatically -->
+  <!-- Images will load automatically -->
 </section>
 
 <div id="lightbox">
@@ -102,52 +102,35 @@
   const lightboxImg = document.getElementById('lightbox-img');
   const closeBtn = document.getElementById('close');
 
-  // List of image filenames
-  const images = [
-    "photo1.jpg",
-    "photo2.jpg",
-    "photo3.jpg",
-    "photo4.jpg",
-    "photo5.jpg",
-    "photo6.jpg",
-    "photo7.jpg",
-    "photo8.jpg",
-    "photo9.jpg",
-    "photo10.jpg",
-    "photo11.jpg"
-    // Add more filenames as needed OR add dynamically using the method below
-  ];
+  // 🖼️ Adjust this number to however many photos you have
+  const totalImages = 250; // can safely be 500 or more
 
-  // If you want to load all files in images folder automatically,
-  // you can just upload them and list all names here
-  images.forEach(file => {
+  // Create fade-in observer
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  // Add each image
+  for (let i = 1; i <= totalImages; i++) {
     const img = document.createElement('img');
-    img.src = `images/${file}`;
-    img.alt = file;
+    img.src = `images/photo${i}.jpg`;
+    img.alt = `photo${i}`;
+    img.loading = "lazy"; // ✅ helps performance for large galleries
     gallery.appendChild(img);
+    observer.observe(img);
     img.addEventListener('click', () => {
       lightbox.style.display = 'flex';
       lightboxImg.src = img.src;
     });
-  });
+  }
 
+  // Close lightbox
   closeBtn.addEventListener('click', () => {
     lightbox.style.display = 'none';
   });
-
-  // Fade-in effect on scroll
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if(entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.gallery img').forEach(img => observer.observe(img));
 </script>
 
 </body>
 </html>
-
-
